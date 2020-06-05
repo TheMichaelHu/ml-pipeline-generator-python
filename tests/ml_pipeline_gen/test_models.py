@@ -19,6 +19,8 @@ import shutil
 import tempfile
 import unittest
 
+from googleapiclient import discovery
+
 from ml_pipeline_gen.models import BaseModel
 from ml_pipeline_gen.models import SklearnModel
 
@@ -36,18 +38,18 @@ class TestSklearnModel(unittest.TestCase):
     """Tests SklearnModel class."""
 
     @classmethod
-    @mock.patch("googleapiclient.discovery")
-    def setUpClass(cls, discovery_mock):
+    @mock.patch.object(discovery, 'build')
+    def setUpClass(cls, build_mock):
         """Copies a demo and instantiates a model."""
         super(TestSklearnModel, cls).setUpClass()
-        discovery_mock.return_value = None
+        build_mock.return_value = None
         cls.cwd = os.getcwd()
         cls.test_dir = tempfile.mkdtemp()
-        cls.demo_dir = os.path.join(cls.test_dir, "demo")
-        shutil.copytree("examples/sklearn", cls.demo_dir)
+        cls.demo_dir = os.path.join(cls.test_dir, 'demo')
+        shutil.copytree('examples/sklearn', cls.demo_dir)
 
         os.chdir(cls.demo_dir)
-        cls.config = "config.yaml.example"
+        cls.config = 'config.yaml.example'
         cls.model = SklearnModel(cls.config)
 
     @classmethod
@@ -70,20 +72,20 @@ class TestSklearnModel(unittest.TestCase):
 
     def test_generate_files(self):
         """Ensures task.py and model.py are created."""
-        self.assertFalse(os.path.exists("trainer"))
+        self.assertFalse(os.path.exists('trainer'))
         self.model.generate_files()
-        self.assertTrue(os.path.exists("trainer"))
-        trainer_files = os.listdir("trainer")
-        self.assertIn("task.py", trainer_files)
-        self.assertIn("model.py", trainer_files)
+        self.assertTrue(os.path.exists('trainer'))
+        trainer_files = os.listdir('trainer')
+        self.assertIn('task.py', trainer_files)
+        self.assertIn('model.py', trainer_files)
 
-    @unittest.skip("How to test without running training?")
+    @unittest.skip('How to test without running training?')
     def test_local_train(self):
         """Tests local training."""
         self.model.generate_files()
         self.model.train()
-        model_files = os.listdir("models")
-        self.assertIn("{}.joblib".format(self.model.model["name"]), model_files)
+        model_files = os.listdir('models')
+        self.assertIn('{}.joblib'.format(self.model.model['name']), model_files)
 
     # TODO(humichael): Need to spoof CAIP calls to test this.
     def test_cloud_train(self):
@@ -96,5 +98,5 @@ class TestSklearnModel(unittest.TestCase):
         pass
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()
