@@ -38,6 +38,7 @@ class TestModel(unittest.TestCase):
         # this test. All examples currently use the same census_preprocess.
         # These tests will break if any example uses a different preprocessing
         # script.
+        # We should just mock this.
         sys.path.append(cls.demo_dir)
         sklearn_model = test_utils.load_module(
             'sklearn_model', os.path.join(

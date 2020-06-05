@@ -40,6 +40,7 @@ class TestModel(tf.test.TestCase):
         # this test. All examples currently use the same census_preprocess.
         # These tests will break if any example uses a different preprocessing
         # script.
+        # We should just mock this.
         sys.path.append(cls.demo_dir)
         tf_model = test_utils.load_module(
             'tf_model', os.path.join(cls.demo_dir, 'model', 'tf_model.py'))

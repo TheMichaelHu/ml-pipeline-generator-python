@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Unit tests for models classes."""
+import mock
 import os
 import shutil
 import tempfile
@@ -35,9 +36,11 @@ class TestSklearnModel(unittest.TestCase):
     """Tests SklearnModel class."""
 
     @classmethod
-    def setUpClass(cls):
+    @mock.patch("googleapiclient.discovery")
+    def setUpClass(cls, discovery_mock):
         """Copies a demo and instantiates a model."""
         super(TestSklearnModel, cls).setUpClass()
+        discovery_mock.return_value = None
         cls.cwd = os.getcwd()
         cls.test_dir = tempfile.mkdtemp()
         cls.demo_dir = os.path.join(cls.test_dir, "demo")
